@@ -10,14 +10,19 @@ extension IndexedIterable<E> on Iterable<E> {
 /// AlphabetSliderView Widget
 class AlphabetSliderView extends StatefulWidget {
   /// Constructor
-  const AlphabetSliderView({
+  AlphabetSliderView({
     Key? key,
+    required this.letters,
+    this.currentSelectedLetter,
     required this.selectLetterCallBack,
     required this.fontSize,
     required this.textColor,
     required this.selectedTextColor,
     required this.verticalLetterPadding,
   }) : super(key: key);
+
+  final List<String> letters;
+  final String? currentSelectedLetter;
 
   /// update currentSelectedLetter
   final void Function(String alphabet) selectLetterCallBack;
@@ -39,19 +44,14 @@ class AlphabetSliderView extends StatefulWidget {
 }
 
 class _AlphabetSliderViewState extends State<AlphabetSliderView> {
-  final letters = List.generate(26, (index) => String.fromCharCode(index + 65))
-    ..add('#');
-
-  String currentSelectedLetter = '';
-
   /// Called on letter change
   void onLetterChange(
     String letter,
     void Function(String alphabet) letterChangeCallBack,
   ) {
-    setState(() {
-      currentSelectedLetter = letter;
-    });
+    // setState(() {
+    //   widget.currentSelectedLetter = letter;
+    // });
     letterChangeCallBack(letter);
   }
 
@@ -71,13 +71,13 @@ class _AlphabetSliderViewState extends State<AlphabetSliderView> {
 
       /// If nextLetterIndex is not within the range of indexes,
       /// then based on overflow assign with max or min index of letters list
-      if (nextLetterIndex > letters.length - 1) {
-        nextLetterIndex = letters.length - 1;
+      if (nextLetterIndex > widget.letters.length - 1) {
+        nextLetterIndex = widget.letters.length - 1;
       } else if (nextLetterIndex < 0) {
         nextLetterIndex = 0;
       }
       // Update currentSelectedLetter
-      onLetterChange(letters[nextLetterIndex], selectLetter);
+      onLetterChange(widget.letters[nextLetterIndex], selectLetter);
     }
   }
 
@@ -88,6 +88,9 @@ class _AlphabetSliderViewState extends State<AlphabetSliderView> {
       return GestureDetector(
         onTap: () => onLetterChange(letter, widget.selectLetterCallBack),
         child: Container(
+          decoration: const BoxDecoration(
+              color: Colors.yellow,
+              borderRadius: BorderRadius.all(Radius.circular(5))),
           alignment: Alignment.center,
           child: Container(
             height: widget.fontSize + 2 * (widget.verticalLetterPadding),
@@ -95,7 +98,7 @@ class _AlphabetSliderViewState extends State<AlphabetSliderView> {
             child: Text(
               letter,
               style: TextStyle(
-                color: currentSelectedLetter == letter
+                color: widget.currentSelectedLetter == letter
                     ? widget.selectedTextColor 
                     : widget.textColor,
                 fontSize: widget.fontSize,
@@ -117,11 +120,11 @@ class _AlphabetSliderViewState extends State<AlphabetSliderView> {
         );
       },
       child: SizedBox(
-        width: widget.fontSize + 10,
+        width: widget.fontSize + 15,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: letters.mapIndexed(getLetterWidget).toList(),
+            children: widget.letters.mapIndexed(getLetterWidget).toList(),
           ),
         ),
       ),

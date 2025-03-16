@@ -13,7 +13,12 @@ class AlphabetSlider extends StatelessWidget {
     this.textColor = Colors.green,
     this.selectedTextColor = Colors.black,
     this.verticalLetterPadding = 2,
+    required this.letters,
+    this.currentSelectedLetter,
   });
+
+  final List<String> letters;
+  final String? currentSelectedLetter;
 
   /// Callback for selecting a letter
   final Function(String letter) onLetterSelect;
@@ -33,6 +38,8 @@ class AlphabetSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlphabetSliderView(
+      letters: letters,
+      currentSelectedLetter: currentSelectedLetter,
       selectLetterCallBack: onLetterSelect,
       selectedTextColor: selectedTextColor,
       textColor: textColor,
